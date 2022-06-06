@@ -50,7 +50,7 @@ def job_finder(event, context):
                 job_description = job_soup.find(id='jobDescriptionText').text
 
                 # the strip() method removes all the blank enters, creating an unique text
-                job['Id'] = job_id
+                job['id'] = job_id
                 job["Description"] = job_description.strip()
                 job["JobUrl"] = url
                 job["Title"] = title
