@@ -15,7 +15,10 @@ indeed_url_job_page = 'https://www.indeed.com/viewjob'
 def job_finder(event, context):
     
     html_text = requests.get(indeed_base_url).text
+    
+    #lxml is the html parser
     soup = BeautifulSoup(html_text, 'lxml')
+    
     job_list = soup.find('ul', class_='jobsearch-ResultsList')
 
     jobs = []
@@ -42,8 +45,9 @@ def job_finder(event, context):
             html_job_page = requests.get(url).text
             job_soup = BeautifulSoup(html_job_page, 'lxml')
             job_description = job_soup.find(id='jobDescriptionText').text
-            # print(url)
+            
 
+            #the strip() method removes all the blank enters, creating an unique text
             job["Description"] = job_description.strip()
             job["JobUrl"] = url
             job["Title"] = title
@@ -51,4 +55,4 @@ def job_finder(event, context):
 
         jobs.append(job)
 
-    print(jobs)
+    logger.info("Job created")
