@@ -1,11 +1,11 @@
 import datetime
 import logging
+import boto
+from botocore.exceptions import UnknownKeyError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 def job_finder(event, context):
-    current_time = datetime.datetime.now().time()
-    name = context.function_name
-    logger.info("Your cron function " + name + " ran at " + str(current_time))
+    
