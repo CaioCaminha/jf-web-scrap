@@ -13,7 +13,7 @@ provider:
   region: us-east-1
 
 functions:
-  cronHandler:
+  job_finder:
     handler: handler.job_finder
     events:
       # Invoke Lambda function every 2nd minute from Mon-Fri
