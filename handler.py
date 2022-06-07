@@ -2,6 +2,7 @@ import datetime
 import logging
 import boto3
 import requests
+from redis import Redis
 from botocore.exceptions import UnknownKeyError
 from bs4 import BeautifulSoup
 
@@ -14,7 +15,6 @@ indeed_url_job_page = 'https://www.indeed.com/viewjob'
 table_name = 'jf-job-finder'
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(table_name)
-
 
 def job_finder(event, context):
 
@@ -55,12 +55,14 @@ def job_finder(event, context):
                 job["JobUrl"] = url
                 job["Title"] = title
                 job["Company"] = company.text
+
+                redis.set('id', job_id, ex=86400)
+
+                redis.get('id')
                 
             response_dynamodb = table.put_item(TableName=table_name, Item=job)
             logger.info(f'Job element saved into dynamodb -> {response_dynamodb}')
         except Exception as err:
-            logger.error(f'Error occurred {err}')
+            logger.error(f'Error occurred {err}') 
 
-        
-
-    logger.info("Job created")
+ 
