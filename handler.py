@@ -2,7 +2,6 @@ import datetime
 import logging
 import boto3
 import requests
-from redis import Redis
 from botocore.exceptions import UnknownKeyError
 from bs4 import BeautifulSoup
 
