@@ -76,7 +76,7 @@ def job_finder(event, context):
         MessageBody=json.dumps(message),
         MessageGroupId='messageGroup1'
     )
-    if response['ResponseMetadata']['HTTPStatusCode'] is true:
+    if response['ResponseMetadata']['HTTPStatusCode'] is True:
         logger.info(f'Message sent to sqs | response: {response}')
     else:
         logger.error('Could not sent message to sqs')
