@@ -6,6 +6,7 @@ import boto3
 import requests
 from botocore.exceptions import UnknownKeyError
 from bs4 import BeautifulSoup
+import re
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -29,7 +30,8 @@ def job_finder(event, context):
     #lxml is the html parser
     soup = BeautifulSoup(html_text, 'lxml')
     
-    job_list = soup.find('ul', class_='jobsearch-ResultsList')
+
+    job_list = soup.find('ul', class_="jobsearch-ResultsList css-0")
     processed_jobs = []
 
 
@@ -39,7 +41,7 @@ def job_finder(event, context):
 
             }
 
-            div_title = job_element.find('h2', class_='jobTitle jobTitle-color-purple jobTitle-newJob')
+            div_title = job_element.find('h2', class_='jobTitle jobTitle-newJob css-bdjp2m eu4oa1w0')
             title = ''
 
             company = job_element.find('span', class_='companyName')
@@ -65,8 +67,8 @@ def job_finder(event, context):
                 job["Title"] = title
                 job["Company"] = company.text
                 
+            logger.info(f'JOB ELEMENT -> {job.id}')    
             response_dynamodb = table.put_item(TableName=table_name, Item=job)
-            logger.info(f'Job element saved into dynamodb -> {response_dynamodb}')
         except Exception as err:
             logger.error(f'Error occurred {err}') 
     
@@ -76,7 +78,8 @@ def job_finder(event, context):
         MessageBody=json.dumps(message),
         MessageGroupId='messageGroup1'
     )
-    if response['ResponseMetadata']['HTTPStatusCode'] is True:
+    logger.info(response)
+    if response['ResponseMetadata']['HTTPStatusCode'] is 200:
         logger.info(f'Message sent to sqs | response: {response}')
     else:
         logger.error('Could not sent message to sqs')
